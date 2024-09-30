@@ -1,0 +1,33 @@
+1. Jenkins
+- (jenkins) login into jenkins user (sudo su jenkins)
+- (jenkins) vim .ssh/id_rsa.pub
+- (jenkins) copy and paste in manager swarm 	
+- (manager) paste in in vim/.ssh/.authorized_keys (sudo su)
+- (jenkins) test: ssh root@$pubIp
+- (manager) cd ~ && mkdir deploy && create .sh name deploy.sh
+- (manager) chmod 766 deploy.sh
+- (manager) exit and sudo su jenkins -
+    #!/bin/bash
+
+    # Check if the Docker image exists
+    image_name="anghailyy/app:1.0"
+    if docker image inspect $image_name &> /dev/null; then
+        echo "Docker image '$image_name' exists."
+    else
+        echo "Docker image '$image_name' does not exist."
+        exit 1
+    fi
+
+    # Check if Docker service named "app" is running
+    if docker service ls --filter "name=app" &> /dev/null; then
+        echo "Docker service 'app' is running."
+    else
+        echo "Docker service 'app' is not running."
+    fi
+# docker service create --name app --replicas 2 -p 8081:8080 tanghailyy/app:1.0
+- go to jenkins dashboard: 
+docker login --username ... --password ...
+docker build -t tanghailyy/app:1.0
+docker push tanghailyy/app:1.0
+
+shh root@$privateIdSwarm "~/deploy/deploy.sh"
